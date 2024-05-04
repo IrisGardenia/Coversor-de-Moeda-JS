@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversor de Moedas</title>
+    <style>
+
+body{ background-color: rgb(255, 255, 255);
+color: #ffffff;
+}
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .cabecalho {
+           border-radius: 10px;
+            background-color: #007bff;
+            color: #ffffff;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .container {
+            font-size: 16px;
+        }
+
+        label {
+            margin-bottom: 10px;
+        }
+
+        select {
+            margin-bottom: 20px;
+        }
+
+        button {
+           
+            margin-bottom: 30px;
+        }
+       
+        button:hover {
+                      
+            background-color: #a6b1b7;
+        }
+
+        .x {
+
+            background-color: #007bff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+                   
+        }
+        h1 {
+            font-size: 25px;
+        }
+
+        #resultado {
+            font-weight: bold;
+        }
+
+        .nota {
+font-size: 12px;
+            margin-bottom: 2%;
+            font-style: italic;
+            margin-top: 30px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<!-- Div para o cabeçalho -->
+<div class="cabecalho">
+    <h1>Conversor de Moedas (Câmbio)</h1>
+</div>
+
+<!-- Div para cor -->
+<div class="x">
+    <div class="container">
+
+        <label for="valor">Informe o valor a ser convertido:</label>
+        <input type="number" id="valor" placeholder="Digite o valor" required><br>
+
+        <label for="moedaOrigem">Informe a moeda de origem:</label>
+        <select id="moedaOrigem">
+            <option value="BRL">Real (R$)</option>
+            <option value="USD">Dólar ($)</option>
+            <option value="CAD">Dólar Canadense ($)</option>
+            <option value="EUR">Euro (€)</option>
+            <option value="JPY">Iene Japonês (¥)</option>
+            <option value="ARS">Peso Argentino ($)</option>
+        </select>
+
+        <label for="moedaDestino">Informe a moeda de destino:</label>
+        <select id="moedaDestino">
+            <option value="BRL">Real (R$)</option>
+            <option value="USD">Dólar ($)</option>
+            <option value="CAD">Dólar Canadense ($)</option>
+            <option value="EUR">Euro (€)</option>
+            <option value="JPY">Iene Japonês (¥)</option>
+            <option value="ARS">Peso Argentino ($)</option>
+        </select>
+
+
+        <button onclick="converter()">Converter</button> <br>
+
+        <div id="resultado"></div>
+
+
+        <div class="nota">
+            Nota: Este conversor de moedas baseou-se na média mensal das taxas de câmbio de cada moeda durante o mês de abril de 2024 de acordo com a plataforma Morningstar.
+        </div>
+
+    </div>
+</div>
+
+<script>
+
+    function converter() {
+        const valor = parseFloat(document.getElementById("valor").value);
+        const moedaOrigem = document.getElementById("moedaOrigem").value;
+        const moedaDestino = document.getElementById("moedaDestino").value;
+
+        const taxaConversao = {
+            "USD_BRL": 5.15, //r
+        "CAD_BRL": 3.70, //r
+        "EUR_BRL": 5.50, //r
+        "JPY_BRL": 0.033, //r
+        "ARS_BRL": 0.0058, //r
+        "BRL_USD": 1 / 5.15, //r
+        "BRL_CAD": 1 / 3.70, //4
+        "BRL_EUR": 1 / 5.50, //r
+        "BRL_JPY": 1 / 0.033, //r
+        "BRL_ARS": 1 / 0.0058, //r
+        "USD_CAD": 5.15 / 3.70, //r
+        "USD_EUR": 5.15 / 5.50, //r
+        "USD_JPY": 1 * 153.06, //r
+        "USD_ARS": 1 * 877.73, //r
+        "CAD_USD": 3.70 / 5.15, //r 
+        "CAD_EUR": 3.70 / 5.50, //r
+        "CAD_JPY": 1 * 111.95, //r
+        "CAD_ARS": 1 * 642.32, //r
+        "EUR_USD": 1.08, //r
+        "EUR_CAD": 1.47, //r
+        "EUR_JPY": 5.50 / 0.033, //r 
+        "EUR_ARS": 5.50 / 0.0058, //r
+        "JPY_USD": 0.033 / 5.15,
+        "JPY_CAD": 0.033 / 3.70,
+        "JPY_EUR": 0.033 / 5.50,
+        "JPY_ARS": 0.033 / 0.0058,
+        "ARS_USD": 0.0058/ 5.15, //r
+        "ARS_CAD": 0.0058/3.70, //r
+        "ARS_EUR": 0.0058/ 5.50, //r
+        "ARS_JPY": 0.0058/0.033 //r
+
+        };
+
+        const moedas = {
+            "BRL": "Real (R$)",
+            "USD": "Dólar ($)",
+            "CAD": "Dólar Canadense ($)",
+            "EUR": "Euro (€)",
+            "JPY": "Iene Japonês (¥)",
+            "ARS": "Peso Argentino ($)"
+        };
+
+        const taxa = taxaConversao[moedaOrigem + "_" + moedaDestino];
+
+        if (isNaN(taxa)) {
+            document.getElementById("resultado").innerHTML = `Não é possível converter ${moedas[moedaOrigem]} para ${moedas[moedaDestino]}.`;
+            return;
+        }
+
+        if (isNaN(valor)) {
+            document.getElementById("resultado").innerHTML = "Por favor, insira um valor numérico válido.";
+            return;
+        }
+
+        if (valor <= 0) {
+            document.getElementById("resultado").innerHTML = "Por favor, insira um valor maior que zero.";
+            return;
+        }
+
+        const valorConvertido = valor * taxa;
+
+        const resultado = `${moedas[moedaOrigem]} ${valor.toFixed(2)} = ${moedas[moedaDestino]} ${(valorConvertido.toFixed(2))}`;
+        document.getElementById("resultado").innerHTML = resultado;
+    }
+
+</script>
+
+</body>
+</html>
