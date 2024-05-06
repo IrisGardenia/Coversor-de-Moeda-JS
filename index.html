@@ -4,10 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Conversor de Moedas</title>
+    <link rel="stylesheet" href="style.css">
     <style>
 
-body{ background-color: rgb(255, 255, 255);
+body{ 
+    margin: none;
+    padding: none;
 color: #ffffff;
+display: flex;
+flex-direction: column;
+overflow-y: hidden;
+height: 98vh;
+
 }
 
         .container {
@@ -19,15 +27,17 @@ color: #ffffff;
         }
 
         .cabecalho {
+            font-family: 'Gill Sans', 'Gill Sans MT','Trebuchet MS', sans-serif;
            border-radius: 10px;
-            background-color: #007bff;
+           background-color: #4abdac;
             color: #ffffff;
             padding: 20px;
             text-align: center;
+           
         }
 
         .container {
-            font-size: 16px;
+            font-size: 15px;
         }
 
         label {
@@ -39,37 +49,44 @@ color: #ffffff;
         }
 
         button {
-           
-            margin-bottom: 30px;
+          
+            margin-bottom: 35px;
         }
        
         button:hover {
                       
-            background-color: #a6b1b7;
+            background-color: #bcf4ec;
         }
 
         .x {
-
-            background-color: #007bff;
+            font-family: sans-serif;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: #4ABDAC;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            margin-top: 20px;
-                   
+            margin-top: 10px;
+ 
         }
         h1 {
-            font-size: 25px;
+            font-size: 22px;
         }
 
         #resultado {
+            font-family: sans-serif;
+              font-size: 15px;
+            color: rgb(0, 0, 0);
+            margin-bottom: 30px;
             font-weight: bold;
         }
 
         .nota {
 font-size: 12px;
-            margin-bottom: 2%;
+        
             font-style: italic;
-            margin-top: 30px;
+          
         }
     </style>
 
@@ -110,13 +127,13 @@ font-size: 12px;
         </select>
 
 
-        <button onclick="converter()">Converter</button> <br>
+        <button onclick="converter()">Converter</button> 
 
-        <div id="resultado"></div>
+        <div id= "resultado"> </div>
 
-
+        <!-- Nota de esclarecimento sobre a fonte usada para realizar a conversão-->
         <div class="nota">
-            Nota: Este conversor de moedas baseou-se na média mensal das taxas de câmbio de cada moeda durante o mês de abril de 2024 de acordo com a plataforma Morningstar.
+             Nota: Este conversor de moedas baseou-se na média mensal das taxas de câmbio de cada moeda durante o mês de abril de 2024 de acordo com a plataforma Morningstar.
         </div>
 
     </div>
@@ -130,7 +147,15 @@ font-size: 12px;
         const moedaDestino = document.getElementById("moedaDestino").value;
 
         const taxaConversao = {
-            "USD_BRL": 5.15, //r
+
+        // Para realizar a conversão foi contabilizada a média mensal do câmbio de cada uma das moedas nos dias de quarta-feira ou quinta-feira durante todo o mês de abril de 2024. 
+        //Com o resultado da média efetuei os calculos necessários para a conversão como divisão, multiplicação e equivalência.
+        //Explicação:
+        // Equivalência: um dólar equivale, em média, (varia de acordo com a cotação) R$ 5,15 reais. Portando, a conversão de "USD_BRL" é igual a "5.15". Dois doláres igual a 10.30 e assim por diante.
+        // O mesmo raciocínio foi usado para converter as demais moedas para reais. 
+        
+
+        "USD_BRL": 5.15, //r
         "CAD_BRL": 3.70, //r
         "EUR_BRL": 5.50, //r
         "JPY_BRL": 0.033, //r
@@ -152,10 +177,10 @@ font-size: 12px;
         "EUR_CAD": 1.47, //r
         "EUR_JPY": 5.50 / 0.033, //r 
         "EUR_ARS": 5.50 / 0.0058, //r
-        "JPY_USD": 0.033 / 5.15,
-        "JPY_CAD": 0.033 / 3.70,
-        "JPY_EUR": 0.033 / 5.50,
-        "JPY_ARS": 0.033 / 0.0058,
+        "JPY_USD": 0.033 / 5.15, //r
+        "JPY_CAD": 0.033 / 3.70, //r
+        "JPY_EUR": 0.033 / 5.50, //r
+        "JPY_ARS": 0.033 / 0.0058, //r
         "ARS_USD": 0.0058/ 5.15, //r
         "ARS_CAD": 0.0058/3.70, //r
         "ARS_EUR": 0.0058/ 5.50, //r
@@ -191,11 +216,37 @@ font-size: 12px;
 
         const valorConvertido = valor * taxa;
 
-        const resultado = `${moedas[moedaOrigem]} ${valor.toFixed(2)} = ${moedas[moedaDestino]} ${(valorConvertido.toFixed(2))}`;
+        const resultado = `${moedas[moedaOrigem]} ${formatarNumero(valor.toFixed(2))} = ${moedas[moedaDestino]} ${formatarNumero(valorConvertido.toFixed(2))}`;
         document.getElementById("resultado").innerHTML = resultado;
+    }
+
+    function formatarNumero(numero) {
+        // Separando a parte inteira da parte decimal
+        const partes = numero.split(".");
+        let parteInteira = partes[0];
+        const parteDecimal = partes[1];
+        let resultado = "";
+
+        // Adicionando os pontos para separar milhares "."
+        for (let i = parteInteira.length - 1, j = 0; i >= 0; i--, j++) {
+            resultado = parteInteira[i] + resultado;
+            if (j % 3 === 2 && i > 0) {
+                resultado = "." + resultado;
+            }
+        }
+
+        // Compondo o resultado final
+        if (parteDecimal === "00") {
+            return resultado;
+        } else {
+            return resultado + "." + parteDecimal;
+        }
     }
 
 </script>
 
 </body>
 </html>
+ 
+
+
